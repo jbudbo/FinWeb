@@ -1,0 +1,48 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ "blazor" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Publish
+      run: dotnet publish src/FinWeb.sln -c Release -o release --nologo
+    - name: Upload GitHub Pages artifact
+      uses: actions/upload-pages-artifact@v3.0.1
+      with:
+        # Artifact name
+        name: wasmstuff
+        # Path of the directory containing the static assets.
+        path: release/wwwroot
+        # Duration after which artifact will expire in days.
+        retention-days: 1
+    - name: Deploy GitHub Pages site
+      uses: actions/deploy-pages@v4.0.5
+      with:
+        # GitHub token
+        token: ${{ github.token }}
+        # Time in milliseconds after which to timeout and cancel the deployment (default: 10 minutes)
+        timeout: 600000
+        # Maximum number of status report errors before cancelling a deployment (default: 10)
+        error_count: 10
+        # Time in milliseconds between two deployment status report (default: 5 seconds)
+        reporting_interval: 5000
+        # Name of the artifact to deploy
+        artifact_name: wasmstuff
+        # Is this attempting to deploy a pull request as a GitHub Pages preview site? (NOTE: This feature is only in alpha currently and is not available to the public!)
+        preview: false
+              
