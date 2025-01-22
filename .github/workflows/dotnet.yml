@@ -23,6 +23,8 @@ jobs:
       run: dotnet restore src/FinWeb.sln
     - name: Publish
       run: dotnet publish src/FinWeb.sln -c Release -o release --nologo
+    - name: Add .nojekyll file
+      run: touch release/wwwroot/.nojekyll
     - name: Upload GitHub Pages artifact
       uses: actions/upload-pages-artifact@v3.0.1
       with:
