@@ -18,7 +18,7 @@ jobs:
       with:
         dotnet-version: 9.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore src/FinWeb.sln
     - name: Publish
       run: dotnet publish src/FinWeb.sln -c Release -o release --nologo
     - name: Upload GitHub Pages artifact
