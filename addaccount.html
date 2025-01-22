@@ -8,8 +8,15 @@
 <body>
     <h3>Add Account</h3>
 
-    <form action="index.html">
+    <form action="index.html" id="frmData">
+        <label for="txtName" form="frmData">Account Name: </label>
         <input type="text" name="Name" id="txtName">
+
+        <label for="txtBalance" form="frmData">Account Balance:</label>
+        <input type="number" name="Balance" id="txtBalance">
+
+        <label for="txtEpoch" form="frmData">Account Epoch:</label>
+        <input type="date" name="Epoch" id="txtEpoch">
     </form>
 </body>
 </html>
