@@ -9,22 +9,50 @@
     <h3>Add Account</h3>
 
     <script>
-        function addAccount(evt) {
-            evt.preventDefault();
+        function addAccount() {
+            const request = window.indexedDB.open("FinWeb", 1);
+
+            const acct = {
+                name: txtName.value,
+                balance: txtBalance.value,
+                epoch: txtEpoch.value
+            }
+
+            request.onerror = (evt) => {
+                console.error(evt.target.error?.message);
+            }
+            request.onsuccess = (evt) => {
+                const db = evt.target.result;
+
+                const transaction = db.transaction(["accounts"], "readwrite");
+
+                transaction.oncomplete = (evt) => {
+                    window.location = "index.html"
+                }
+
+                const accounts = transaction.objectStore("accounts");
+                accounts.add(acct)
+            }
+
+            request.onupgradeneeded = (evt) => {
+                const db = evt.target.result;
+
+                const acctStore = db.createObjectStore("accounts", { keyPath: "name" });
+            }
         }
     </script>
 
-    <form action="index.html" id="frmData" onsubmit="addAccount">
-        <label for="txtName" form="frmData">Account Name: </label>
+    <div>
+        <label for="txtName">Account Name: </label>
         <input type="text" name="Name" id="txtName">
 
-        <label for="txtBalance" form="frmData">Account Balance:</label>
-        <input type="number" name="Balance" id="txtBalance">
+        <label for="txtBalance">Account Balance:</label>
+        <input type="number" name="Balance" id="txtBalance" step=".01">
 
-        <label for="txtEpoch" form="frmData">Account Epoch:</label>
+        <label for="txtEpoch">Account Epoch:</label>
         <input type="date" name="Epoch" id="txtEpoch">
 
-        <input type="submit" value="Save">
-    </form>
+        <input type="button" value="Save" onclick="addAccount()">
+    </div>
 </body>
 </html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinWeb.io - Add Account</title>
+</head>
+<body>
+    <h3>Add Account</h3>
+
+    <script>
+        function getAccounts() {
+            const request = window.indexedDB.open("FinWeb", 1);
+
+            request.onerror = (evt) => {
+                console.error(evt.target.error?.message);
+            }
+            request.onsuccess = (evt) => {
+                const db = evt.target.result;
+
+                const accts = db.transaction("accounts").objectStore("accounts");
+
+                accts.getAllKeys().onsuccess = (evt) => {
+                    debugger;
+                };
+            }
+
+            request.onupgradeneeded = (evt) => {
+                const db = evt.target.result;
+
+                const acctStore = db.createObjectStore("accounts", { keyPath: "name" });
+            }
+        }
+        function addAccount() {
+            const request = window.indexedDB.open("FinWeb", 1);
+
+            const acct = {
+                name: txtName.value,
+                balance: txtBalance.value,
+                epoch: txtEpoch.value
+            }
+
+            request.onerror = (evt) => {
+                console.error(evt.target.error?.message);
+            }
+            request.onsuccess = (evt) => {
+                const db = evt.target.result;
+
+                const transaction = db.transaction(["accounts"], "readwrite");
+
+                transaction.oncomplete = (evt) => {
+                    window.location = "index.html"
+                }
+
+                const accounts = transaction.objectStore("accounts");
+                accounts.add(acct)
+            }
+
+            request.onupgradeneeded = (evt) => {
+                const db = evt.target.result;
+
+                const acctStore = db.createObjectStore("accounts", { keyPath: "name" });
+            }
+        }
+
+        getAccounts();
+    </script>
+
+    
+
+    <div>
+        <label for="txtName">Account Name: </label>
+        <input type="text" name="Name" id="txtName">
+
+        <label for="txtBalance">Account Balance:</label>
+        <input type="number" name="Balance" id="txtBalance" step=".01">
+
+        <label for="txtEpoch">Account Epoch:</label>
+        <input type="date" name="Epoch" id="txtEpoch">
+
+        <input type="button" value="Save" onclick="addAccount()">
+    </div>
+</body>
+</html>
