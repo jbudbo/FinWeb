@@ -8,7 +8,13 @@
 <body>
     <h3>Add Account</h3>
 
-    <form action="index.html" id="frmData">
+    <script>
+        function addAccount(evt) {
+            evt.preventDefault();
+        }
+    </script>
+
+    <form action="index.html" id="frmData" onsubmit="addAccount">
         <label for="txtName" form="frmData">Account Name: </label>
         <input type="text" name="Name" id="txtName">
 
