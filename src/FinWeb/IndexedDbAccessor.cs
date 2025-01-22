@@ -20,6 +20,18 @@ public class IndexedDbAccessor(IJSRuntime jsRuntime)
         return await _accessorJsRef.Value.InvokeAsync<T>("get", store, id);
     }
 
+    public async Task<string[]> GetKeys(string store)
+    {
+        await WaitForReference();
+        return await _accessorJsRef.Value.InvokeAsync<string[]>("keys", store);
+    }
+
+    public async Task<AccountDto[]> GetAccountsAsync()
+    {
+        await WaitForReference();
+        return await _accessorJsRef.Value.InvokeAsync<AccountDto[]>("getAccounts");
+    }
+
     public async Task SetValueAsync<T>(string store, T val)
     {
         await WaitForReference();

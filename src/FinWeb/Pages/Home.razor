@@ -1,16 +1,46 @@
 ﻿@page "/"
 @inject IndexedDbAccessor dbAccessor
+@inject ILogger<Home> logger
 
+<PageTitle>Accounts</PageTitle>
 
-<PageTitle>Home</PageTitle>
+<HeadContent>
+    <style>
+        #tbl-accounts th, td {
+            padding: 2px 5px;
+        }
+    </style>
+</HeadContent>
 
-<h1>Hello, world!</h1>
+<h1>Accounts</h1>
 
-Welcome to your new app.
+<table id="tbl-accounts">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Epoch</th>
+            <th>Balance</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (AccountDto act in accountNames)
+    {
+        <tr>
+            <td>@act.Name</td>
+            <td>@act.Epoch.ToShortDateString()</td>
+            <td>@act.Balance.ToString("$###,###,##0.00")</td>
+        </tr>
+    }
+    </tbody>
+</table>
 
 @code {
+    private AccountDto[] accountNames = [];
+
     protected override async Task OnInitializedAsync()
     {
         await dbAccessor.InitializeAsync();
+
+        accountNames = await dbAccessor.GetAccountsAsync();
     }
 }
